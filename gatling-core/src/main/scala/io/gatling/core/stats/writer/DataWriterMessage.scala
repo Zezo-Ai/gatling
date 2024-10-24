@@ -50,9 +50,7 @@ private[gatling] object DataWriterMessage {
 
   sealed trait LoadEvent extends DataWriterMessage
   object LoadEvent {
-    final case class UserStart(scenario: String, timestamp: Long) extends LoadEvent
-
-    final case class UserEnd(scenario: String, timestamp: Long) extends LoadEvent
+    final case class User(scenario: String, timestamp: Long, start: Boolean) extends LoadEvent
 
     final case class Response(
         scenario: String,
@@ -76,6 +74,6 @@ private[gatling] object DataWriterMessage {
       val duration: Int = (endTimestamp - startTimestamp).toInt
     }
 
-    final case class Error(message: String, date: Long) extends LoadEvent
+    final case class Error(message: String, timestamp: Long) extends LoadEvent
   }
 }
