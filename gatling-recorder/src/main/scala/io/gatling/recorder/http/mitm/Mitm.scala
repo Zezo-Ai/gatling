@@ -28,9 +28,9 @@ import io.gatling.recorder.http.ssl.SslServerContext
 
 import com.typesafe.scalalogging.StrictLogging
 import io.netty.bootstrap.{ Bootstrap, ServerBootstrap }
-import io.netty.channel.{ Channel, ChannelInitializer, ChannelOption, EventLoopGroup }
+import io.netty.channel.{ Channel, ChannelInitializer, ChannelOption, EventLoopGroup, MultiThreadIoEventLoopGroup }
 import io.netty.channel.group.{ ChannelGroup, DefaultChannelGroup }
-import io.netty.channel.nio.NioEventLoopGroup
+import io.netty.channel.nio.NioIoHandler
 import io.netty.channel.socket.nio.{ NioServerSocketChannel, NioSocketChannel }
 import io.netty.handler.codec.http._
 import io.netty.util.concurrent.GlobalEventExecutor
@@ -46,8 +46,8 @@ object Mitm extends StrictLogging {
 
   def apply(controller: RecorderController, clock: Clock, config: RecorderConfiguration): Mitm = {
     val serverChannelGroup = new DefaultChannelGroup("Gatling_Recorder", GlobalEventExecutor.INSTANCE)
-    val bindEventLoopGroup = new NioEventLoopGroup(1)
-    val socketEventLoopGroup = new NioEventLoopGroup
+    val bindEventLoopGroup = new MultiThreadIoEventLoopGroup(1, NioIoHandler.newFactory)
+    val socketEventLoopGroup = new MultiThreadIoEventLoopGroup(NioIoHandler.newFactory)
 
     val trafficLogger = new TrafficLogger(controller)
     val sslServerContext = SslServerContext(config)
