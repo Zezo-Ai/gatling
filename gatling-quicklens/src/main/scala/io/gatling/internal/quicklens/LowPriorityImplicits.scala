@@ -25,6 +25,7 @@ private[quicklens] trait LowPriorityImplicits {
   /**
    * `QuicklensEach` is in `LowPriorityImplicits` to not conflict with the `QuicklensMapAtFunctor` on `each` calls.
    */
+  // scalafix:off; we disable scalafix here or compilation fails with "illegal cyclic reference involving package object quicklens)"
   implicit class QuicklensEach[F[_], T](t: F[T])(implicit f: QuicklensFunctor[F, T]) {
     @compileTimeOnly(canOnlyBeUsedInsideModify("each"))
     def each: T = sys.error("")
@@ -32,4 +33,5 @@ private[quicklens] trait LowPriorityImplicits {
     @compileTimeOnly(canOnlyBeUsedInsideModify("eachWhere"))
     def eachWhere(p: T => Boolean): T = sys.error("")
   }
+  // scalafix:on
 }
